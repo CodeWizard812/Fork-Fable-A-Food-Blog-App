@@ -9,19 +9,14 @@ function Home() {
     const authStatus = useSelector((state) => state.auth.status); // 2. Get auth status
 
     useEffect(() => {
-        // Only fetch posts if the user is logged in.
-        if (authStatus) {
-            appwriteService.getPosts().then((response) => {
-                if (response && response.documents) {
-                    setPosts(response.documents);
-                }
-            }).finally(() => setLoading(false)); // Stop loading regardless of outcome
-        } else {
-            // If user is not logged in, there's nothing to load or show.
-            setLoading(false);
-            setPosts([]); // Clear posts if user logs out
-        }
-    }, [authStatus]); // Rerun this effect if authStatus changes
+        setLoading(true);
+        appwriteService.getPosts().then((response) => {
+            if (response && response.rows) {
+                setPosts(response.rows);
+                
+            }
+        }).finally(() => setLoading(false));
+    }, []); // Rerun this effect if authStatus changes
 
     // Case 1: User is NOT logged in
     if (!authStatus) {

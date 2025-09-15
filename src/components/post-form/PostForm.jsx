@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import { useForm } from 'react-hook-form'
-import {Button, Input, Select, RTE} from '../index'
+import {Button, Input, Select, RTE} from '..'
 import appwriteService from '../../appwrite/config'
 import { useNavigate } from 'react-router'
 import { useSelector } from 'react-redux'
@@ -9,7 +9,7 @@ function PostForm({post}) {
     const {register, handleSubmit, watch, setValue, control, getValues} = useForm({
         defaultValues: {
             title: post?.title || '',
-            slug: post?.slug || '',
+            slug: post?.$id || '',
             content: post?.content || '',
             status: post?.status || 'active',
         },
@@ -58,9 +58,11 @@ function PostForm({post}) {
             return value
             .trim()
             .toLowerCase()
-            .replace(/^[a-zA-z\d\s]+/g, '-')
-            .replace(/\s/g, '-')
-        return ''
+            // Replace all non-alphanumeric characters (excluding '-') with hyphens
+            .replace(/[^a-z0-9]+/g, '-')
+            // Remove leading or trailing hyphens
+            .replace(/^-+|-+$/g, '');
+        return "";
     }, [])
 
     React.useEffect(() =>{

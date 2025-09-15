@@ -99,7 +99,7 @@ export class Service{
             return await this.tablesDB.listRows({
                 databaseId: conf.appwriteDatabaseId,
                 tableId: conf.appwriteTableId,
-                queries,
+                queries: queries,
             })
         } catch (error) {
             console.log("Appwrite service :: getPosts :: error", error);
@@ -140,10 +140,12 @@ export class Service{
 
     // Gets a preview URL for a file
     getFilePreview(fileId){
-        return this.bucket.getFilePreview({
+        const response =  this.bucket.getFilePreview({
             bucketId: conf.appwriteBucketId,
             fileId: fileId
         })
+        console.log(response.href)
+        return response.href;
     }
 }
 
