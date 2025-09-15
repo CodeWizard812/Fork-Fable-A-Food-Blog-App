@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router'
 
 function EditPost() {
     const [posts, setPosts] = useState(null)
-    const {} = useParams()
+    const {slug} = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {

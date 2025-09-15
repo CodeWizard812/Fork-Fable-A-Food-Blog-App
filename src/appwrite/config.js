@@ -41,6 +41,7 @@ export class Service{
         }
     }
 
+    //here slug is not being updated.
     // Updates an existing post by its slug (row ID)
     async updatePost(slug, {title, content, featuredImage, status}){
         try {
@@ -140,12 +141,10 @@ export class Service{
 
     // Gets a preview URL for a file
     getFilePreview(fileId){
-        const response =  this.bucket.getFilePreview({
+        return this.bucket.getFileView({
             bucketId: conf.appwriteBucketId,
-            fileId: fileId
-        })
-        console.log(response.href)
-        return response.href;
+            fileId: fileId,
+        });
     }
 }
 
