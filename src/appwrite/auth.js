@@ -43,7 +43,7 @@ export class AuthService {
         }
     }
 
-    async getCurrentUSer(){
+    async getCurrentUser(){
         try {
             return await this.account.get();
         } catch (error) {

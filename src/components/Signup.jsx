@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import authService from '../appwrite/auth'
 import { Link, useNavigate } from 'react-router'
 import {login} from '../store/authSlice'
@@ -15,9 +15,9 @@ function Signup() {
     const create = async(data)=>{
         setError("")
         try {
-            const userData = await authService.createAccount(data)
-            if(userData)
-                userData = await authService.getCurrentUSer()
+            const session = await authService.createAccount(data)
+            if(session)
+                userData = await authService.getCurrentUser()
                 if(userData) dispatch(login(userData));
                 navigate('/')
         } catch (error) {

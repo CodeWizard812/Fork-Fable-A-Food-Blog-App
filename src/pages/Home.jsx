@@ -1,46 +1,82 @@
-import React, {useState, useEffect} from 'react'
-import {Container, PostCard} from '../components'
-import appwriteService from '../appwrite/config'
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux'; // 1. Import useSelector
+import { Container, PostCard } from '../components';
+import appwriteService from '../appwrite/config';
 
 function Home() {
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState([]); // Start with empty array for simplicity
+    const [loading, setLoading] = useState(true); // Add a dedicated loading state
+    const authStatus = useSelector((state) => state.auth.status); // 2. Get auth status
 
     useEffect(() => {
-        appwriteService.getPosts().then((posts) => {
-        if (posts) {
-            setPosts(posts.documents)
+        // Only fetch posts if the user is logged in.
+        if (authStatus) {
+            appwriteService.getPosts().then((response) => {
+                if (response && response.documents) {
+                    setPosts(response.documents);
+                }
+            }).finally(() => setLoading(false)); // Stop loading regardless of outcome
+        } else {
+            // If user is not logged in, there's nothing to load or show.
+            setLoading(false);
+            setPosts([]); // Clear posts if user logs out
         }
-    })
-    }, [])
+    }, [authStatus]); // Rerun this effect if authStatus changes
 
-    if(posts.length === 0){
+    // Case 1: User is NOT logged in
+    if (!authStatus) {
         return (
             <div className="w-full py-8 mt-4 text-center">
                 <Container>
-                    <div className="flex flex-wrap">
-                        <div className="p-2 w-full">
-                            <h1 className="text-2xl font-bold hover:text-gray-500">
-                                Login to read posts
-                            </h1>
-                        </div>
-                    </div>
+                    <h1 className="text-2xl font-bold hover:text-gray-500">
+                        Login to read posts
+                    </h1>
                 </Container>
             </div>
-        )
+        );
     }
-  return (
-    <div className='w-full py-8'>
-        <Container>
-            <div className='flex flex-wrap'>
-                {posts.map((post) => (
-                    <div key={post.$id} className='p-2 w-1/4'>
-                        <PostCard {...post} />
-                    </div>
-                ))}
+
+    // At this point, we know the user IS logged in.
+    // Now we handle the data states.
+
+    // Case 2: Logged in, but data is loading
+    if (loading) {
+        return (
+            <div className="w-full py-8 mt-4 text-center">
+                <Container>
+                    <h1 className="text-2xl font-bold">Loading...</h1>
+                </Container>
             </div>
-        </Container>
-    </div>
-  )
+        );
+    }
+
+    // Case 3: Logged in, loading finished, and there are no posts
+    if (posts.length === 0) {
+        return (
+            <div className="w-full py-8 mt-4 text-center">
+                <Container>
+                    <h1 className="text-2xl font-bold hover:text-gray-500">
+                        No posts found. Be the first to create one!
+                    </h1>
+                </Container>
+            </div>
+        );
+    }
+
+    // Case 4: Logged in, loading finished, and posts exist
+    return (
+        <div className='w-full py-8'>
+            <Container>
+                <div className='flex flex-wrap'>
+                    {posts.map((post) => (
+                        <div key={post.$id} className='p-2 w-1/4'>
+                            <PostCard {...post} />
+                        </div>
+                    ))}
+                </div>
+            </Container>
+        </div>
+    );
 }
 
-export default Home
+export default Home;
