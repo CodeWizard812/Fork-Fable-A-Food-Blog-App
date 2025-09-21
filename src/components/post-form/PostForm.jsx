@@ -93,6 +93,7 @@ function PostForm({post}) {
                     label="Slug :"
                     placeholder="Slug"
                     className="mb-4"
+                    readOnly
                     {...register("slug", { required: true })}
                     onInput={(e) => {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });

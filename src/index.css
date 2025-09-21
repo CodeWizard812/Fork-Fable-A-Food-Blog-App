@@ -1,1 +1,40 @@
 @import "tailwindcss";
+:root {
+  /* Core Colors */
+  --background-color: #FDFDFB;   /* A clean, warm off-white for a bright and airy feel. */
+  --text-color: #2c3e50;           /* A soft, dark slate for excellent readability without being harsh. */
+  
+  /* Brand Colors */
+  --primary-color: #007D75;       /* A rich, vibrant Teal. Engaging and professional for headings. */
+  --secondary-color: #344F1F;     /* Kept the deep, earthy Leafy Green for grounding and contrast. */
+
+  /* Accent & Action Colors */
+  --accent-color: #FFF2E6;         /* A subtle, warm peach for highlights, backgrounds, or hover effects. */
+  --cta-color: #E8A80D;            /* Warm Marigold - Inviting, confident, and appetizing. */
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: sans-serif; /* A clean font helps the colors shine */
+}
+
+h1, h2, h3 {
+  color: var(--primary-color);
+}
+
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+button:hover, .button:hover {
+  background-color: #ff7c4d; /* A slightly lighter, more vibrant coral on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* A slightly larger shadow for a soft lift */
+}
