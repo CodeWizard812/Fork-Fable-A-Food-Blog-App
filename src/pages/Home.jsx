@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux'; // 1. Import useSelector
+import { useSelector, useDispatch } from 'react-redux'; // 1. Import useSelector
 import { Container, PostCard } from '../components';
 import appwriteService from '../appwrite/config';
+import { setPosts } from '../store/postSlice';
 
 function Home() {
-    const [posts, setPosts] = useState([]); // Start with empty array for simplicity
-    const [loading, setLoading] = useState(true); // Add a dedicated loading state
+    const posts = useSelector((state) => state.posts.posts);
     const authStatus = useSelector((state) => state.auth.status); // 2. Get auth status
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        setLoading(true);
-        appwriteService.getPosts().then((response) => {
-            if (response && response.rows) {
-                setPosts(response.rows);
-                
-            }
-        }).finally(() => setLoading(false));
-    }, []); // Rerun this effect if authStatus changes
+        // Only fetch if posts are not already in the store
+        if (posts.length === 0) {
+            appwriteService.getPosts().then((response) => {
+                if (response) {
+                    dispatch(setPosts(response.rows));
+                }
+            });
+        }
+    }, [posts, dispatch]);
 
     // Case 1: User is NOT logged in
     if (!authStatus) {
@@ -33,17 +35,6 @@ function Home() {
 
     // At this point, we know the user IS logged in.
     // Now we handle the data states.
-
-    // Case 2: Logged in, but data is loading
-    if (loading) {
-        return (
-            <div className="w-full py-8 mt-4 text-center">
-                <Container>
-                    <h1 className="text-2xl font-bold">Loading...</h1>
-                </Container>
-            </div>
-        );
-    }
 
     // Case 3: Logged in, loading finished, and there are no posts
     if (posts.length === 0) {
