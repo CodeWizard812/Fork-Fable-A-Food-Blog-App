@@ -4,21 +4,29 @@ import appwriteService from '../appwrite/config'
 import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../store/postSlice';
 
-function AllPosts() {
-    const posts = useSelector((state) => state.posts.posts);
-    const authStatus = useSelector((state) => state.auth.status); // 2. Get auth status
-    const dispatch = useDispatch();
+function MyPosts() {
+    const allPosts = useSelector((state) => state.posts.posts);
+    const userData = useSelector((state) => state.auth.userData);
+    const authStatus = useSelector((state) => state.auth.status);
+    const [userPosts, setUserPosts] = useState([]);
 
     useEffect(() => {
-        // Only fetch if posts are not already in the store
-        if (posts.length === 0) {
-            appwriteService.getPosts().then((response) => {
-                if (response) {
-                    dispatch(setPosts(response.rows));
-                }
-            });
+        if (userData && allPosts.length > 0) {
+            // Filter posts to only show the ones created by the current user
+            const filteredPosts = allPosts.filter(post => post.userId === userData.$id);
+            setUserPosts(filteredPosts);
         }
-    }, [posts, dispatch]);
+    }, [allPosts, userData]);
+
+    if (userPosts.length === 0) {
+        return (
+            <div className="w-full py-8 mt-4 text-center">
+                <Container>
+                    <h1 className="text-2xl font-bold">You haven't created any posts yet.</h1>
+                </Container>
+            </div>
+        )
+    }
 
     // Case 1: User is NOT logged in
     if (!authStatus) {
@@ -32,28 +40,12 @@ function AllPosts() {
             </div>
         );
     }
-
-    // At this point, we know the user IS logged in.
-    // Now we handle the data states.
-
-    // Case 3: Logged in, loading finished, and there are no posts
-    if (posts.length === 0) {
-        return (
-            <div className="w-full py-8 mt-4 text-center">
-                <Container>
-                    <h1 className="text-2xl font-bold hover:text-gray-500">
-                        No post yet.
-                    </h1>
-                </Container>
-            </div>
-        );
-    }
     
   return (
     <div className='w-full py-8'>
         <Container>
             <div className='flex flex-wrap'>
-                {posts.map((post) =>(
+                {userPosts.map((post) =>(
                     <div key={post.$id} className='p-2 w-1/4'>
                         <PostCard {...post} /> 
                     </div>
@@ -64,4 +56,4 @@ function AllPosts() {
   )
 }
 
-export default AllPosts
+export default MyPosts
