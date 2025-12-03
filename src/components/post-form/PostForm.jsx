@@ -49,6 +49,7 @@ function PostForm({post}) {
                 const dbPost = await appwriteService.createPost({
                     ...data,
                     userId: userData.$id,
+                    userName: userData.name,
                 })
 
                 if(dbPost){

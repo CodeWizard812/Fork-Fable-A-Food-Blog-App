@@ -45,6 +45,24 @@ export default function Post() {
     return post ? (
         <div className="py-8">
             <Container>
+                <div className="flex items-center gap-3 mb-4 pl-2">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-lg">
+                        {post.userName ? post.userName.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="font-bold text-gray-800 text-lg">
+                            {post.userName || "Unknown Author"}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                            {new Date(post.$createdAt).toLocaleDateString("en-US", {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            })}
+                        </span>
+                    </div>
+                </div>
+
                 <div className="w-full flex justify-center mb-4 relative rounded-xl p-2">
                     <img
                         src={appwriteService.getFilePreview(post.featuredImage)}

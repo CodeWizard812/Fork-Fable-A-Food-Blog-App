@@ -21,7 +21,7 @@ export class Service{
     }
 
     // Creates a new post (a new row in the database table)
-    async createPost({title, slug, content, featuredImage, status, userId}){
+    async createPost({title, slug, content, featuredImage, status, userId, userName}){
         try {
             // New syntax: pass parameters as a single object
             return await this.tablesDB.createRow({
@@ -34,6 +34,7 @@ export class Service{
                     featuredImage,
                     status,
                     userId,
+                    userName,
                 }
             })
         } catch (error) {
